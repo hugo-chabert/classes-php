@@ -42,7 +42,6 @@ class User{
     }
 
     public function disconnect(){
-        mysqli_set_charset($this->bdd,'utf8');
         session_destroy();
     }
 
@@ -57,6 +56,20 @@ class User{
         else{
             echo 'Utilisateur inexistant';
         }
+    }
+
+    public function update($login, $password, $email, $firstname, $lastname){
+        mysqli_set_charset($this->bdd,'utf8');
+        $loginUpdate = $_SESSION['user']['login'];
+        $updateUser = mysqli_query($this->bdd, "UPDATE utilisateurs SET
+                                    login = '".$login."',
+                                    password = '".$password."',
+                                    email = '".$email."',
+                                    firstname = '".$firstname."',
+                                    lastname = '".$lastname."'
+                                    WHERE login = '".$loginUpdate."'");
+        session_destroy();
+        header('Location : index.php');
     }
 }
 
@@ -77,5 +90,39 @@ if(isset($_POST['deco'])){
 
 if(isset($_POST['delete'])){
     $datas->delete();
+}
+
+if(isset($_POST['MODIF'])){
+    if(empty($_POST['loginModif'])){
+        $loginModif = $_SESSION['user']['login'];
+    }
+    else{
+        $loginModif = $_POST['loginModif'];
+    }
+    if(empty($_POST['passwordModif'])){
+        $passwordModif = $_SESSION['user']['password'];
+    }
+    else{
+        $passwordModif = $_POST['passwordModif'];
+    }
+    if(empty($_POST['emailModif'])){
+        $emailModif = $_SESSION['user']['email'];
+    }
+    else{
+        $emailModif = $_POST['emailModif'];
+    }
+    if(empty($_POST['loginModif'])){
+        $firstnameModif = $_SESSION['user']['firstname'];
+    }
+    else{
+        $firstnameModif = $_POST['firstnameModif'];
+    }
+    if(empty($_POST['lastnameModif'])){
+        $lastnameModif = $_SESSION['user']['lastname'];
+    }
+    else{
+        $lastnameModif = $_POST['lastnameModif'];
+    }
+    $datas->update($loginModif, $passwordModif, $emailModif, $firstnameModif, $lastnameModif);
 }
 ?>
