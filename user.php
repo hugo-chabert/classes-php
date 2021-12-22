@@ -27,6 +27,8 @@ class User{
         else{
             $Register = mysqli_query($this->bdd, "INSERT INTO utilisateurs (login, password, email, firstname, lastname) VALUES ('$login','$password','$email','$firstname','$lastname')");
         }
+        header('Location: index.php');
+        exit();
     }
 
     public function connect($login, $password){
@@ -39,23 +41,23 @@ class User{
         if($row == 1){
             $_SESSION['user'] = $fetch;
         }
+        header('Location: index.php');
+        exit();
     }
 
     public function disconnect(){
         session_destroy();
+        header('Location: index.php');
+        exit();
     }
 
     public function delete(){
         mysqli_set_charset($this->bdd,'utf8');
-        $loginD = $_POST['loginD'];
-        $deleteUserRequest = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE login = '".$loginD."'");
-        $rowDelete = mysqli_num_rows($deleteUserRequest);
-        if($rowDelete == 1){
-            $delete = mysqli_query($this->bdd,"DELETE FROM utilisateurs WHERE login = '".$loginD."'");
-        }
-        else{
-            echo 'Utilisateur inexistant';
-        }
+        $loginD = $_SESSION['user']['login'];
+        $delete = mysqli_query($this->bdd,"DELETE FROM utilisateurs WHERE login = '".$loginD."'");
+        session_destroy();
+        header('Location: index.php');
+        exit();
     }
 
     public function update($login, $password, $email, $firstname, $lastname){
@@ -69,60 +71,17 @@ class User{
                                     lastname = '".$lastname."'
                                     WHERE login = '".$loginUpdate."'");
         session_destroy();
-        header('Location : index.php');
+        header('Location: index.php');
+        exit();
+    }
+
+    public function isConnected(){
+        mysqli_set_charset($this->bdd,'utf8');
+        echo ((bool)$_SESSION);
     }
 }
 
 
 $datas = new User(0,0,0,0,0);
 
-if(isset($_POST['inscription'])){
-    $datas->register($_POST['login'],$_POST['password'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
-}
-
-if(isset($_POST['connexion'])){
-    $datas->connect($_POST['loginC'],$_POST['passwordC']);
-}
-
-if(isset($_POST['deco'])){
-    $datas->disconnect();
-}
-
-if(isset($_POST['delete'])){
-    $datas->delete();
-}
-
-if(isset($_POST['MODIF'])){
-    if(empty($_POST['loginModif'])){
-        $loginModif = $_SESSION['user']['login'];
-    }
-    else{
-        $loginModif = $_POST['loginModif'];
-    }
-    if(empty($_POST['passwordModif'])){
-        $passwordModif = $_SESSION['user']['password'];
-    }
-    else{
-        $passwordModif = $_POST['passwordModif'];
-    }
-    if(empty($_POST['emailModif'])){
-        $emailModif = $_SESSION['user']['email'];
-    }
-    else{
-        $emailModif = $_POST['emailModif'];
-    }
-    if(empty($_POST['loginModif'])){
-        $firstnameModif = $_SESSION['user']['firstname'];
-    }
-    else{
-        $firstnameModif = $_POST['firstnameModif'];
-    }
-    if(empty($_POST['lastnameModif'])){
-        $lastnameModif = $_SESSION['user']['lastname'];
-    }
-    else{
-        $lastnameModif = $_POST['lastnameModif'];
-    }
-    $datas->update($loginModif, $passwordModif, $emailModif, $firstnameModif, $lastnameModif);
-}
 ?>

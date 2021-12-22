@@ -8,3 +8,10 @@ include 'user.php';
     <input type="password" name="passwordC" placeholder="Mot de Passe"></br>
     <button type="submit" name="connexion">Connexion</button>
 </form>
+
+<?php
+
+if(isset($_POST['connexion'])){
+    $datas->connect($_POST['loginC'],$_POST['passwordC']);
+}
+?>

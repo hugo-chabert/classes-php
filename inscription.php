@@ -58,3 +58,10 @@ if(isset($_POST['inscription'])){
     <input type="text" name="lastname" placeholder="Nom"></br>
     <button type="submit" name="inscription">Inscription</button>
 </form>
+
+<?php
+
+if(isset($_POST['inscription'])){
+    $datas->register($_POST['login'],$_POST['password'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
+}
+?>
