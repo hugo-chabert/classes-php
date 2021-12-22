@@ -19,50 +19,13 @@ class User{
 
     public function register($login, $password, $email, $firstname, $lastname){
         mysqli_set_charset($this->bdd,'utf8');
-        $Register = mysqli_query($this->bdd, "INSERT INTO utilisateurs (login, password, email, firstname, lastname) VALUES ('$login','$password','$email','$firstname','$lastname')");
-        $RecupUser = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE login = '".$login."'");
-        $fetch = mysqli_fetch_all($RecupUser, MYSQLI_ASSOC);
-        foreach($fetch AS $Datas){
-            echo (' <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    Login
-                                </th>
-                                <th>
-                                    Mot de Passe
-                                </th>
-                                <th>
-                                    Email
-                                </th>
-                                <th>
-                                    Prenom
-                                </th>
-                                <th>
-                                    Nom
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    '.$Datas["login"].'
-                                </td>
-                                <td>
-                                    '.$Datas["password"].'
-                                </td>
-                                <td>
-                                    '.$Datas["email"].'
-                                </td>
-                                <td>
-                                    '.$Datas["firstname"].'
-                                </td>
-                                <td>
-                                    '.$Datas["lastname"].'
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>');
+        $User_Exist = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE login = '".$login."'");
+        $Row_Exist = mysqli_num_rows($User_Exist);
+        if($Row_Exist == 1){
+            echo 'Utilisateur déjà existant';
+        }
+        else{
+            $Register = mysqli_query($this->bdd, "INSERT INTO utilisateurs (login, password, email, firstname, lastname) VALUES ('$login','$password','$email','$firstname','$lastname')");
         }
     }
 
@@ -85,7 +48,15 @@ class User{
 
     public function delete(){
         mysqli_set_charset($this->bdd,'utf8');
-        
+        $loginD = $_POST['loginD'];
+        $deleteUserRequest = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE login = '".$loginD."'");
+        $rowDelete = mysqli_num_rows($deleteUserRequest);
+        if($rowDelete == 1){
+            $delete = mysqli_query($this->bdd,"DELETE FROM utilisateurs WHERE login = '".$loginD."'");
+        }
+        else{
+            echo 'Utilisateur inexistant';
+        }
     }
 }
 
@@ -102,5 +73,9 @@ if(isset($_POST['connexion'])){
 
 if(isset($_POST['deco'])){
     $datas->disconnect();
+}
+
+if(isset($_POST['delete'])){
+    $datas->delete();
 }
 ?>
