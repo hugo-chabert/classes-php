@@ -75,30 +75,32 @@ class User{
         $fetch = mysqli_fetch_assoc($recupUserConnect);
         if($row == 1){
             $_SESSION['user'] = $fetch;
-            header('Location : index.php');
         }
     }
 
     public function disconnect(){
         mysqli_set_charset($this->bdd,'utf8');
         session_destroy();
-        header('Location : index.php');
-        exit();
+    }
+
+    public function delete(){
+        mysqli_set_charset($this->bdd,'utf8');
+        
     }
 }
 
+
+$datas = new User(0,0,0,0,0);
+
 if(isset($_POST['inscription'])){
-    $datas = new User(1, $_POST['login'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
     $datas->register($_POST['login'],$_POST['password'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
 }
 
 if(isset($_POST['connexion'])){
-    $datas = new User(1, $_POST['login'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
     $datas->connect($_POST['loginC'],$_POST['passwordC']);
 }
 
 if(isset($_POST['deco'])){
-    $datas = new User(1, $_POST['login'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
     $datas->disconnect();
 }
 ?>
