@@ -6,6 +6,7 @@ class User{
     public $email;
     public $firstname;
     public $lastname;
+    public $bdd;
 
     public function __construct($id,$login,$email,$firstname,$lastname){
         $this->id = $id;
@@ -13,27 +14,91 @@ class User{
         $this->email = $email;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
+        $this->bdd = mysqli_connect('localhost', 'root', 'root', 'classes');
     }
 
     public function register($login, $password, $email, $firstname, $lastname){
-        $bdd = mysqli_connect('localhost', 'root', 'root', 'classes');
-        mysqli_set_charset($bdd,'utf8');
-        $requete = mysqli_query($bdd, "INSERT INTO utilisateurs (login, password, email, firstname, lastname) VALUES ('$login','$password','$email','$firstname','$lastname')");
-        return '<tr><td>'.$login.'</td><td>'.$password.'</td><td>'.$email.'</td><td>'.$firstname.'</td><td>'.$lastname.'</td></tr>';
+        mysqli_set_charset($this->bdd,'utf8');
+        $Register = mysqli_query($this->bdd, "INSERT INTO utilisateurs (login, password, email, firstname, lastname) VALUES ('$login','$password','$email','$firstname','$lastname')");
+        $RecupUser = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE login = '".$login."'");
+        $fetch = mysqli_fetch_all($RecupUser, MYSQLI_ASSOC);
+        foreach($fetch AS $Datas){
+            echo (' <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Login
+                                </th>
+                                <th>
+                                    Mot de Passe
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Prenom
+                                </th>
+                                <th>
+                                    Nom
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    '.$Datas["login"].'
+                                </td>
+                                <td>
+                                    '.$Datas["password"].'
+                                </td>
+                                <td>
+                                    '.$Datas["email"].'
+                                </td>
+                                <td>
+                                    '.$Datas["firstname"].'
+                                </td>
+                                <td>
+                                    '.$Datas["lastname"].'
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>');
+        }
+    }
+
+    public function connect($login, $password){
+        mysqli_set_charset($this->bdd,'utf8');
+        $loginC = $_POST['loginC'];
+        $passwordC = $_POST['passwordC'];
+        $recupUserConnect = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE login = '".$loginC."' AND password ='".$passwordC."'");
+        $row = mysqli_num_rows($recupUserConnect);
+        $fetch = mysqli_fetch_assoc($recupUserConnect);
+        if($row == 1){
+            $_SESSION['user'] = $fetch;
+            header('Location : index.php');
+        }
+    }
+
+    public function disconnect(){
+        mysqli_set_charset($this->bdd,'utf8');
+        session_destroy();
+        header('Location : index.php');
+        exit();
     }
 }
 
-$datas = new User(1, $_POST('login'), $_POST('email'), $_POST('firstname'), $_POST('lastname'));
-$datas->register();
-var_dump($datas);
+if(isset($_POST['inscription'])){
+    $datas = new User(1, $_POST['login'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
+    $datas->register($_POST['login'],$_POST['password'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
+}
 
+if(isset($_POST['connexion'])){
+    $datas = new User(1, $_POST['login'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
+    $datas->connect($_POST['loginC'],$_POST['passwordC']);
+}
+
+if(isset($_POST['deco'])){
+    $datas = new User(1, $_POST['login'], $_POST['email'], $_POST['firstname'], $_POST['lastname']);
+    $datas->disconnect();
+}
 ?>
-
-<form action="" method="POST">
-    <input type="text" name="login" placeholder="Login"></br>
-    <input type="text" name="password" placeholder="Mot de Passe"></br>
-    <input type="text" name="email" placeholder="Email"></br>
-    <input type="text" name="firstname" placeholder="Prenom"></br>
-    <input type="text" name="lastname" placeholder="Nom"></br>
-    <button type="submit" name="send">Envoyer</button>
-</form>
