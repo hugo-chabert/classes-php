@@ -53,3 +53,6 @@ if(isset($_POST['MODIF'])){
     $datas->update($loginModif, $passwordModif, $emailModif, $firstnameModif, $lastnameModif);
 }
 ?>
+
+
+<a href="index.php">Retour à l'accueil</a></br>

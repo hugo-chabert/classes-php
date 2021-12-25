@@ -59,6 +59,7 @@ if(isset($_POST['inscription'])){
     <button type="submit" name="inscription">Inscription</button>
 </form>
 
+<a href="index.php">Retour à l'accueil</a></br>
 <?php
 
 if(isset($_POST['inscription'])){

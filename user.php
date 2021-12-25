@@ -27,8 +27,6 @@ class User{
         else{
             $Register = mysqli_query($this->bdd, "INSERT INTO utilisateurs (login, password, email, firstname, lastname) VALUES ('$login','$password','$email','$firstname','$lastname')");
         }
-        header('Location: index.php');
-        exit();
     }
 
     public function connect($login, $password){
@@ -52,7 +50,6 @@ class User{
     }
 
     public function delete(){
-        mysqli_set_charset($this->bdd,'utf8');
         $loginD = $_SESSION['user']['login'];
         $delete = mysqli_query($this->bdd,"DELETE FROM utilisateurs WHERE login = '".$loginD."'");
         session_destroy();
@@ -76,8 +73,90 @@ class User{
     }
 
     public function isConnected(){
+        echo ((bool)$_SESSION).'</br>';
+    }
+
+    public function getAllInfos(){
         mysqli_set_charset($this->bdd,'utf8');
-        echo ((bool)$_SESSION);
+        $connected = $_SESSION['user']['login'];
+        $isConnect = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE `login`= '".$connected."'");
+        $rows = mysqli_num_rows($isConnect);
+        if ($rows == 1){
+            $fetch = mysqli_fetch_all($isConnect, MYSQLI_ASSOC);?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Login</th>
+                        <th>Email</th>
+                        <th>Prenom</th>
+                        <th>Nom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($fetch as $profil){
+                        echo'<tr><td>'.$profil['login'].'</td>';
+                        echo'<td>'.$profil['email'].'</td>';
+                        echo'<td>'.$profil['firstname'].'</td>';
+                        echo'<td>'.$profil['lastname'].'</td></tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php
+        }
+    }
+
+    public function getLogin(){
+        mysqli_set_charset($this->bdd,'utf8');
+        $connected = $_SESSION['user']['login'];
+        $isConnect = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE `login`= '".$connected."'");
+        $rows = mysqli_num_rows($isConnect);
+        if ($rows == 1){
+            $fetch = mysqli_fetch_all($isConnect, MYSQLI_ASSOC);
+            foreach($fetch as $profil){
+                echo 'Login : '.$profil['login'].'</br>';
+            }
+        }
+    }
+
+    public function getEmail(){
+        mysqli_set_charset($this->bdd,'utf8');
+        $connected = $_SESSION['user']['login'];
+        $isConnect = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE `login`= '".$connected."'");
+        $rows = mysqli_num_rows($isConnect);
+        if ($rows == 1){
+            $fetch = mysqli_fetch_all($isConnect, MYSQLI_ASSOC);
+            foreach($fetch as $profil){
+                echo 'Email : '.$profil['email'].'</br>';
+            }
+        }
+    }
+
+    public function getFirstname(){
+        mysqli_set_charset($this->bdd,'utf8');
+        $connected = $_SESSION['user']['login'];
+        $isConnect = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE `login`= '".$connected."'");
+        $rows = mysqli_num_rows($isConnect);
+        if ($rows == 1){
+            $fetch = mysqli_fetch_all($isConnect, MYSQLI_ASSOC);
+            foreach($fetch as $profil){
+                echo 'Prénom : '.$profil['firstname'].'</br>';
+            }
+        }
+    }
+
+    public function getLastname(){
+        mysqli_set_charset($this->bdd,'utf8');
+        $connected = $_SESSION['user']['login'];
+        $isConnect = mysqli_query($this->bdd, "SELECT * FROM utilisateurs WHERE `login`= '".$connected."'");
+        $rows = mysqli_num_rows($isConnect);
+        if ($rows == 1){
+            $fetch = mysqli_fetch_all($isConnect, MYSQLI_ASSOC);
+            foreach($fetch as $profil){
+                echo 'Nom : '.$profil['lastname'].'</br>';
+            }
+        }
     }
 }
 

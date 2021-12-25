@@ -15,3 +15,5 @@ if(isset($_POST['connexion'])){
     $datas->connect($_POST['loginC'],$_POST['passwordC']);
 }
 ?>
+
+<a href="index.php">Retour à l'accueil</a></br>
